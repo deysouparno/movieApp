@@ -3,7 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/drawable/gradient.xml" value="0.2703125" />
+        <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/drawable/ic_baseline_play_circle_filled_24.xml" value="0.2703125" />
+        <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.2703125" />
+        <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/layout/fragment_home.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/layout/fragment_movie_details.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/layout/fragment_search.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/layout/movie_item.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/layout/video_item.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/menu/home_menu.xml" value="0.25416666666666665" />
       </map>
     </option>
   </component>
@@ -12,5 +21,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.25416666666666665" />
+      </ProjectState>
+    </option>
   </component>
 </project>
