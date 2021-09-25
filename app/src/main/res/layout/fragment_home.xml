@@ -82,7 +82,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/latest_movie_rv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="266dp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -110,7 +110,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/trending_movie_rv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="266dp"
                 android:orientation="horizontal"
 
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -139,7 +139,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/top_movie_rv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="266dp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"

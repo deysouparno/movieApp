@@ -14,13 +14,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.example.movieapp.NetworkStatus
+import com.example.movieapp.NetworkStatusHelper
 import com.example.movieapp.R
-import com.example.movieapp.checkForInternet
 import com.example.movieapp.data.Genre
 import com.example.movieapp.data.VideoData
 import com.example.movieapp.databinding.FragmentMovieDetailsBinding
 import com.example.movieapp.ui.VideoClickListener
-import com.example.movieapp.ui.home.HomeFragmentDirections
 import com.google.android.material.chip.Chip
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
@@ -30,10 +30,12 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MovieDetailsFragment : Fragment(), VideoClickListener {
 
-    private lateinit var binding: FragmentMovieDetailsBinding
+    private val binding: FragmentMovieDetailsBinding get() =  _binding!!
+    private var _binding: FragmentMovieDetailsBinding? = null
+
     private val viewModel: MovieDetailsViewModel by viewModels()
 
-    private val key = "AIzaSyCxLu-t12qvJR79_r3aLj5nxtVRBG6uSn4"
+//    private val key = "AIzaSyCxLu-t12qvJR79_r3aLj5nxtVRBG6uSn4"
 
     private var currentVideo = ""
 
@@ -59,18 +61,33 @@ class MovieDetailsFragment : Fragment(), VideoClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentMovieDetailsBinding.inflate(inflater)
+
+        _binding = FragmentMovieDetailsBinding.inflate(inflater)
         val args: MovieDetailsFragmentArgs by navArgs()
         val movie = args.movie
 
-        if (checkForInternet(context = requireContext())) {
-            findNavController().navigate(
-                HomeFragmentDirections.actionHomeFragmentToNoNetworkFragment()
-            )
+        NetworkStatusHelper(context = requireContext()).observe(viewLifecycleOwner, {
+            when(it){
+                    NetworkStatus.Available -> {
+                        Log.d("network", "details connected")
+                    }
+                NetworkStatus.Unavailable -> {
+                    findNavController().navigate(
+                        MovieDetailsFragmentDirections.actionMovieDetailsFragmentToNoNetworkFragment()
+                    )
+                }
+            }
+        })
+
+
+        try {
+            viewModel.getVideos(id = movie.id)
+            viewModel.getMovieDetails(id = movie.id)
+        }
+        catch (e: Exception) {
+
         }
 
-        viewModel.getVideos(id = movie.id)
-        viewModel.getMovieDetails(id = movie.id)
 
         val videoAdapter = VideosRvAdapter(movieName = movie.title, listener = this)
 //        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.detailsToolbar)
@@ -82,7 +99,6 @@ class MovieDetailsFragment : Fragment(), VideoClickListener {
             youtubeFragmentContainer.addYouTubePlayerListener(playerListener)
             Glide.with(moviePoster.context)
                 .load("https://image.tmdb.org/t/p/original${movie.poster_path}")
-
                 .into(moviePoster)
 
         }
@@ -158,12 +174,12 @@ class MovieDetailsFragment : Fragment(), VideoClickListener {
         Log.d("youtube", "video clicked")
         currentVideo = video.key
         vid.value = video.key
-//        binding.youtubeFragmentContainer.apply {
-//            removeYouTubePlayerListener(playerListener)
-////            addYouTubePlayerListener(playerListener)
-//
-//        }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

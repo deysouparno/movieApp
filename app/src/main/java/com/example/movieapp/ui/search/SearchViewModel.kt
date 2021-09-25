@@ -1,13 +1,13 @@
 package com.example.movieapp.ui.search
 
 import android.app.DownloadManager
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.switchMap
-import androidx.lifecycle.viewModelScope
+import android.content.Context
+import androidx.lifecycle.*
 import androidx.paging.cachedIn
+import com.example.movieapp.checkForInternet
 import com.example.movieapp.data.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,6 +17,16 @@ class SearchViewModel @Inject constructor(private val repository: MovieRepositor
     var genres = MutableLiveData<String>("")
 
     var flag = true
+
+    private val _isConnected = MutableLiveData(false)
+    val isConnected: LiveData<Boolean>
+        get() = _isConnected
+
+    fun checkNetwork(context: Context) {
+        viewModelScope.launch {
+            _isConnected.postValue(checkForInternet(context = context))
+        }
+    }
 
     var searchMovies =  query.switchMap { queryString ->
         if (flag) repository.getPopularMoviesPaginated().cachedIn(viewModelScope)

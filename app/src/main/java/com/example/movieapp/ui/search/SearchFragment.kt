@@ -1,6 +1,7 @@
 package com.example.movieapp.ui.search
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +12,12 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.movieapp.checkForInternet
+import com.example.movieapp.NetworkStatus
+import com.example.movieapp.NetworkStatusHelper
 import com.example.movieapp.data.Movie
-import com.example.movieapp.data.VideoData
 import com.example.movieapp.databinding.FragmentSearchBinding
 import com.example.movieapp.ui.ClickListener
-import com.example.movieapp.ui.VideoClickListener
-import com.example.movieapp.ui.home.HomeFragmentDirections
+import com.example.movieapp.ui.movie_details.MovieDetailsFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,23 +32,32 @@ class SearchFragment : Fragment() , ClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         _binding = FragmentSearchBinding.inflate(layoutInflater)
         searchAdapter = SearchAdapter(listener = this)
 
         val args: SearchFragmentArgs by navArgs()
         val code = args.code
 
-        if (checkForInternet(context = requireContext())) {
-            findNavController().navigate(
-                HomeFragmentDirections.actionHomeFragmentToNoNetworkFragment()
-            )
-        }
-
         val arr = code.split(" ")
 
         if (code != "search") {
             binding.textInputLayout.isVisible = false
         }
+
+        NetworkStatusHelper(context = requireContext()).observe(viewLifecycleOwner, {
+            when(it){
+                NetworkStatus.Available -> {
+                    Log.d("network", "search connected")
+                }
+                NetworkStatus.Unavailable -> {
+                    Log.d("network", "search disconnected")
+                    findNavController().navigate(
+                        SearchFragmentDirections.actionSearchFragmentToNoNetworkFragment()
+                    )
+                }
+            }
+        })
 
 
         binding.apply {
@@ -65,45 +74,51 @@ class SearchFragment : Fragment() , ClickListener {
             }
         }
 
-        when(arr[0]) {
-            "top" -> {
-                binding.genreName.isVisible = true
-                binding.genreName.text = "Top Rated Movies"
-                viewModel.topRatedMovies.observe(viewLifecycleOwner, {
-                    searchAdapter.submitData(viewLifecycleOwner.lifecycle, it)
-                })
-            }
+        try {
 
-            "popular" -> {
-                binding.genreName.isVisible = true
-                binding.genreName.text = "Popular Movies"
-                viewModel.popularMovies.observe(viewLifecycleOwner, {
-                    searchAdapter.submitData(viewLifecycleOwner.lifecycle, it)
-                })
-            }
 
-            "latest" -> {
-                binding.genreName.isVisible = true
-                binding.genreName.text = "Latest Movies"
-                viewModel.latestMovies.observe(viewLifecycleOwner, {
-                    searchAdapter.submitData(viewLifecycleOwner.lifecycle, it)
-                })
-            }
+            when (arr[0]) {
+                "top" -> {
+                    binding.genreName.isVisible = true
+                    binding.genreName.text = "Top Rated Movies"
+                    viewModel.topRatedMovies.observe(viewLifecycleOwner, {
+                        searchAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+                    })
+                }
 
-            "genre" -> {
-                viewModel.genres.value = arr.last()
-                binding.genreName.isVisible = true
-                binding.genreName.text = "${arr[1]} Movies"
-                viewModel.moviesByGenre.observe(viewLifecycleOwner, {
-                    searchAdapter.submitData(viewLifecycleOwner.lifecycle, it)
-                })
-            }
+                "popular" -> {
+                    binding.genreName.isVisible = true
+                    binding.genreName.text = "Popular Movies"
+                    viewModel.popularMovies.observe(viewLifecycleOwner, {
+                        searchAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+                    })
+                }
 
-            else -> {
-                viewModel.searchMovies.observe(viewLifecycleOwner, {
-                    searchAdapter.submitData(viewLifecycleOwner.lifecycle, it)
-                })
+                "latest" -> {
+                    binding.genreName.isVisible = true
+                    binding.genreName.text = "Latest Movies"
+                    viewModel.latestMovies.observe(viewLifecycleOwner, {
+                        searchAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+                    })
+                }
+
+                "genre" -> {
+                    viewModel.genres.value = arr.last()
+                    binding.genreName.isVisible = true
+                    binding.genreName.text = "${arr[1]} Movies"
+                    viewModel.moviesByGenre.observe(viewLifecycleOwner, {
+                        searchAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+                    })
+                }
+
+                else -> {
+                    viewModel.searchMovies.observe(viewLifecycleOwner, {
+                        searchAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+                    })
+                }
             }
+        } catch (E: Exception) {
+
         }
 
         return binding.root

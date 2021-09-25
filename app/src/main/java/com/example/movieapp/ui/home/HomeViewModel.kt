@@ -1,7 +1,9 @@
 package com.example.movieapp.ui.home
 
-import androidx.lifecycle.*
-import androidx.paging.cachedIn
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.movieapp.data.Movie
 import com.example.movieapp.data.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
