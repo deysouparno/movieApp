@@ -3,9 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/drawable/app_icon_background.xml" value="0.2703125" />
         <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/drawable/gradient.xml" value="0.2703125" />
         <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/drawable/ic_baseline_play_circle_filled_24.xml" value="0.2703125" />
         <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.2703125" />
+        <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/drawable/ripple_effect.xml" value="0.2703125" />
+        <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/drawable/test_ripple.xml" value="0.2703125" />
         <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/layout/fragment_home.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Souparno Dey/AndroidStudioProjects/MovieApp/app/src/main/res/layout/fragment_movie_details.xml" value="0.25416666666666665" />

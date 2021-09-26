@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_marginHorizontal="4dp"
     android:layout_marginVertical="8dp"
+    android:clickable="true"
+    android:focusable="true"
     android:backgroundTint="?attr/colorPrimary"
     android:background="?android:attr/selectableItemBackground"
     android:layout_height="120dp">
@@ -26,8 +28,12 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="30dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground"
             android:src="@drawable/ic_baseline_play_circle_filled_24"
             app:layout_constraintBottom_toBottomOf="@id/video_thumbnail"
             app:layout_constraintEnd_toEndOf="@+id/video_thumbnail"
@@ -35,9 +41,13 @@
             app:layout_constraintTop_toTopOf="@+id/video_thumbnail" />
 
         <LinearLayout
+            android:id="@+id/video_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/video_thumbnail"

@@ -41,6 +41,10 @@ sealed class NetworkStatus {
     object Unavailable : NetworkStatus()
 }
 
+val networkCapability =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) NetworkCapabilities.NET_CAPABILITY_VALIDATED
+    else NetworkCapabilities.NET_CAPABILITY_INTERNET
+
 class NetworkStatusHelper(context: Context) : LiveData<NetworkStatus>() {
 
     val validNetworkConnections: ArrayList<Network> = ArrayList()
@@ -58,37 +62,45 @@ class NetworkStatusHelper(context: Context) : LiveData<NetworkStatus>() {
 
     private fun getConnectivityManagerCallback() =
         object : ConnectivityManager.NetworkCallback() {
+
             override fun onAvailable(network: Network) {
+                Log.d("network", "available called")
                 super.onAvailable(network)
-                postValue(NetworkStatus.Available)
-//                val networkCapability = connectivityManager.getNetworkCapabilities(network)
-//                val hasNetworkConnection =
-//                    networkCapability?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-//                        ?: false
-//                if (hasNetworkConnection) {
-//                    validNetworkConnections.add(network)
-//                    announceStatus()
-//                }
+//                postValue(NetworkStatus.Available)
+                val networkCapability = connectivityManager.getNetworkCapabilities(network)
+                val hasNetworkConnection =
+                    networkCapability?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                        ?: false
+                if (hasNetworkConnection) {
+                    validNetworkConnections.add(network)
+                    announceStatus()
+                }
+                Log.d("network", validNetworkConnections.toString())
             }
 
             override fun onLost(network: Network) {
                 super.onLost(network)
+                Log.d("network", "network lost called")
                 postValue(NetworkStatus.Unavailable)
-//                validNetworkConnections.remove(network)
-//                announceStatus()
+                validNetworkConnections.remove(network)
+                announceStatus()
+                Log.d("network", validNetworkConnections.toString())
             }
 
             override fun onCapabilitiesChanged(
                 network: Network,
                 networkCapabilities: NetworkCapabilities
             ) {
+                Log.d("network", "changed capabilities called")
                 super.onCapabilitiesChanged(network, networkCapabilities)
-                if (networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
-                    validNetworkConnections.add(network)
-                } else {
-                    validNetworkConnections.remove(network)
-                }
-                announceStatus()
+//                if (networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)) {
+//                    validNetworkConnections.add(network)
+//                } else {
+//                    validNetworkConnections.remove(network)
+//                }
+//                announceStatus()
+                Log.d("network", validNetworkConnections.toString())
+
             }
         }
 

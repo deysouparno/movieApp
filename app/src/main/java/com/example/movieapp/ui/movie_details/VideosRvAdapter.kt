@@ -51,9 +51,10 @@ class VideoViewHolder(private val binding: VideoItemBinding) :
             val binding =
                 VideoItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             val viewHolder = VideoViewHolder(binding)
-            binding.root.setOnClickListener {
-
-
+            binding.imageView.setOnClickListener {
+                listener.onClick(differ.currentList[viewHolder.bindingAdapterPosition])
+            }
+            binding.videoContainer.setOnClickListener {
                 listener.onClick(differ.currentList[viewHolder.bindingAdapterPosition])
             }
             return viewHolder

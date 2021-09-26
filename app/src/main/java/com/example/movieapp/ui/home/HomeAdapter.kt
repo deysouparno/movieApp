@@ -1,5 +1,6 @@
 package com.example.movieapp.ui.home
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -7,14 +8,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestOptions
 import com.example.movieapp.R
 import com.example.movieapp.data.Movie
-import com.example.movieapp.databinding.FragmentHomeBinding
 import com.example.movieapp.databinding.MovieItemBinding
 import com.example.movieapp.ui.ClickListener
 
-class HomeAdapter(private val listener: ClickListener, private val code: String): RecyclerView.Adapter<HomeViewHolder>() {
+class HomeAdapter(private val listener: ClickListener, private val code: String) :
+    RecyclerView.Adapter<HomeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
         return HomeViewHolder.form(parent, listener, differ, code = code)
@@ -37,7 +37,6 @@ class HomeAdapter(private val listener: ClickListener, private val code: String)
     }
 
 
-
     private val differ = AsyncListDiffer(this, diffCallback)
 
     fun submitList(list: List<Movie>) {
@@ -57,25 +56,62 @@ private val diffCallback = object : DiffUtil.ItemCallback<Movie>() {
 
 }
 
-class HomeViewHolder(private val binding: MovieItemBinding): RecyclerView.ViewHolder(binding.root) {
+class HomeViewHolder(private val binding: MovieItemBinding) :
+    RecyclerView.ViewHolder(binding.root) {
 
     companion object {
-        fun form(parent: ViewGroup, listener: ClickListener, differ: AsyncListDiffer<Movie>, code: String): HomeViewHolder {
+        fun form(
+            parent: ViewGroup,
+            listener: ClickListener,
+            differ: AsyncListDiffer<Movie>,
+            code: String
+        ): HomeViewHolder {
             val binding =
                 MovieItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             val viewHolder = HomeViewHolder(binding)
 
-            binding.root.setOnClickListener {
-                if (differ.currentList.size  == viewHolder.bindingAdapterPosition) {
-                    listener.viewMore(code = code)
+//            binding.movieImage.apply {
+//                setOnLongClickListener {
+//                    binding.movieImage.animate().apply {
+//                        duration = 200
+//                        scaleX(0.7f)
+//                        scaleY(0.7f)
+//                    }
+//                        .withEndAction {
+//                        binding.movieImage.animate().apply {
+//                            duration = 200
+//                            scaleX(1f)
+//                            scaleY(1f)
+//                        }
+//                    }
+//                    return@setOnLongClickListener true
+//                }
+//
+//
+//            }
+
+            binding.movieImage.setOnClickListener {
+                binding.movieImage.animate().apply {
+                    duration = 200
+                    scaleX(0.7f)
+                    scaleY(0.7f)
+                }.withEndAction {
+                    binding.movieImage.animate().apply {
+                        duration = 200
+                        scaleX(1f)
+                        scaleY(1f)
+                    }
                 }
-                else {
+                if (differ.currentList.size == viewHolder.bindingAdapterPosition) {
+                    listener.viewMore(code = code)
+                } else {
                     listener.onClick(differ.currentList[viewHolder.bindingAdapterPosition])
                 }
             }
             return viewHolder
         }
     }
+
     fun bind(movie: Movie) {
         binding.apply {
             binding.movieName.text = movie.title
