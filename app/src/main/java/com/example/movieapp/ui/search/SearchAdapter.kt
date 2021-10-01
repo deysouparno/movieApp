@@ -1,6 +1,9 @@
 package com.example.movieapp.ui.search
 
+import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.paging.DifferCallback
 import androidx.paging.PagingDataAdapter
@@ -21,11 +24,53 @@ class SearchAdapter(private val listener: ClickListener) : PagingDataAdapter<Mov
         if (currentItem != null) holder.bind(currentItem)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val binding = MovieItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val viewHolder = SearchViewHolder(binding)
-        binding.root.setOnClickListener {
-            getItem(viewHolder.bindingAdapterPosition)?.let { it1 -> listener.onClick(it1) }
+//        binding.movieImage.setOnClickListener {
+//            getItem(viewHolder.bindingAdapterPosition)?.let { it1 -> listener.onClick(it1) }
+//        }
+
+        var shouldClick = true
+        var milli = 0L
+
+
+        binding.movieImage.setOnTouchListener { v, event ->
+            return@setOnTouchListener when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    shouldClick = true
+                    milli = System.currentTimeMillis()
+                    Log.d("home", "millis is initiated $milli")
+                    binding.root.animate().apply {
+                        duration = 200
+                        scaleX(0.7f)
+                        scaleY(0.7f)
+                    }
+                    true
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    shouldClick = false
+                    binding.root.animate().apply {
+                        duration = 100
+                        scaleX(1f)
+                        scaleY(1f)
+                    }
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    binding.root.animate().apply {
+                        duration = 100
+                        scaleX(1f)
+                        scaleY(1f)
+                    }
+                    if (shouldClick && System.currentTimeMillis() - milli <= 1000) {
+                        getItem(viewHolder.bindingAdapterPosition)?.let { it1 -> listener.onClick(it1) }
+                    }
+                    true
+                }
+                else -> false
+            }
         }
         return viewHolder
     }

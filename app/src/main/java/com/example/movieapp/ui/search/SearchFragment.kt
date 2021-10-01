@@ -1,11 +1,13 @@
 package com.example.movieapp.ui.search
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,11 +19,10 @@ import com.example.movieapp.NetworkStatusHelper
 import com.example.movieapp.data.Movie
 import com.example.movieapp.databinding.FragmentSearchBinding
 import com.example.movieapp.ui.ClickListener
-import com.example.movieapp.ui.movie_details.MovieDetailsFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SearchFragment : Fragment() , ClickListener {
+class SearchFragment : Fragment(), ClickListener {
 
     private val binding: FragmentSearchBinding get() = _binding!!
     private var _binding: FragmentSearchBinding? = null
@@ -46,7 +47,7 @@ class SearchFragment : Fragment() , ClickListener {
         }
 
         NetworkStatusHelper(context = requireContext()).observe(viewLifecycleOwner, {
-            when(it){
+            when (it) {
                 NetworkStatus.Available -> {
                     Log.d("network", "search connected")
                 }
@@ -60,45 +61,62 @@ class SearchFragment : Fragment() , ClickListener {
         })
 
 
+
         binding.apply {
             searchRv.layoutManager = GridLayoutManager(context, 2)
             searchRv.setHasFixedSize(true)
             searchRv.adapter = searchAdapter
             textInputLayout.setEndIconOnClickListener {
-
-                if (!searchQuery.text.isNullOrEmpty()) {
-                    viewModel.flag = false
-                    Toast.makeText(context, searchQuery.text.toString(), Toast.LENGTH_SHORT).show()
-                    viewModel.query.value = searchQuery.text.toString()
-                }
+                search()
             }
+
+
+            searchQuery.setOnEditorActionListener { v, actionId, event ->
+                Log.d("search", "key pressed")
+
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    search()
+                    return@setOnEditorActionListener true
+                }
+                return@setOnEditorActionListener false
+            }
+
         }
 
         try {
-
-
             when (arr[0]) {
                 "top" -> {
                     binding.genreName.isVisible = true
                     binding.genreName.text = "Top Rated Movies"
                     viewModel.topRatedMovies.observe(viewLifecycleOwner, {
                         searchAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+                        if (searchAdapter.itemCount > 0) {
+                            binding.searchShimmer.isVisible = false
+                        }
                     })
                 }
 
                 "popular" -> {
                     binding.genreName.isVisible = true
                     binding.genreName.text = "Popular Movies"
+
                     viewModel.popularMovies.observe(viewLifecycleOwner, {
                         searchAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+                        if (searchAdapter.itemCount > 0) {
+                            binding.searchShimmer.isVisible = false
+                        }
                     })
                 }
 
                 "latest" -> {
                     binding.genreName.isVisible = true
                     binding.genreName.text = "Latest Movies"
+                    binding.searchShimmer.isVisible = false
                     viewModel.latestMovies.observe(viewLifecycleOwner, {
                         searchAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+                        if (searchAdapter.itemCount > 0) {
+                            binding.searchShimmer.isVisible = false
+                        }
                     })
                 }
 
@@ -106,15 +124,22 @@ class SearchFragment : Fragment() , ClickListener {
                     viewModel.genres.value = arr.last()
                     binding.genreName.isVisible = true
                     binding.genreName.text = "${arr[1]} Movies"
+                    binding.searchShimmer.isVisible = false
                     viewModel.moviesByGenre.observe(viewLifecycleOwner, {
                         searchAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+                        if (searchAdapter.itemCount > 0) {
+                            binding.searchShimmer.isVisible = false
+                        }
+
                     })
                 }
 
                 else -> {
                     viewModel.searchMovies.observe(viewLifecycleOwner, {
                         searchAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+                        binding.searchShimmer.isVisible = false
                     })
+
                 }
             }
         } catch (E: Exception) {
@@ -122,6 +147,28 @@ class SearchFragment : Fragment() , ClickListener {
         }
 
         return binding.root
+    }
+
+
+    private fun search() {
+        binding.apply {
+            if (!searchQuery.text.isNullOrEmpty()) {
+                viewModel.flag = false
+                binding.searchShimmer.isVisible = true
+                viewModel.query.value = searchQuery.text.toString()
+                Log.d("search", "search called, adapter itemcount: ${searchAdapter.itemCount > 0}")
+
+            }
+        }
+        hideKeyboard()
+    }
+
+    private fun hideKeyboard() {
+        binding.searchQuery.apply {
+            (context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
+                .hideSoftInputFromWindow(this.windowToken, 0)
+            clearFocus()
+        }
     }
 
     override fun onDestroyView() {

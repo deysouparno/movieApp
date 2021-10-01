@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -68,14 +69,23 @@ class HomeFragment : Fragment(), ClickListener {
 
         viewModel.popularMovies.observe(viewLifecycleOwner, {
             popularMovieAdapter.submitList(it)
+            if (it.isNotEmpty()) {
+                binding.trendingMovieShimmer.isVisible = false
+            }
         })
 
         viewModel.topRatedMovies.observe(viewLifecycleOwner, {
             topRatedMovieAdapter.submitList(it)
+            if (it.isNotEmpty()) {
+                binding.topMovieShimmer.isVisible = false
+            }
         })
 
         viewModel.latestMovies.observe(viewLifecycleOwner, {
             latestMovieAdapter.submitList(it)
+            if (it.isNotEmpty()) {
+                binding.latestMovieShimmer.isVisible = false
+            }
         })
 
         return binding.root

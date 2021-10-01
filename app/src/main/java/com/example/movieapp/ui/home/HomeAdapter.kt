@@ -1,7 +1,9 @@
 package com.example.movieapp.ui.home
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
@@ -60,6 +62,7 @@ class HomeViewHolder(private val binding: MovieItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     companion object {
+        @SuppressLint("ClickableViewAccessibility")
         fun form(
             parent: ViewGroup,
             listener: ClickListener,
@@ -70,26 +73,50 @@ class HomeViewHolder(private val binding: MovieItemBinding) :
                 MovieItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             val viewHolder = HomeViewHolder(binding)
 
-//            binding.movieImage.apply {
-//                setOnLongClickListener {
-//                    binding.movieImage.animate().apply {
-//                        duration = 200
-//                        scaleX(0.7f)
-//                        scaleY(0.7f)
-//                    }
-//                        .withEndAction {
-//                        binding.movieImage.animate().apply {
-//                            duration = 200
-//                            scaleX(1f)
-//                            scaleY(1f)
-//                        }
-//                    }
-//                    return@setOnLongClickListener true
-//                }
-//
-//
-//            }
+            var shouldClick = true
+            var milli = 0L
 
+            binding.movieImage.setOnTouchListener { v, event ->
+                return@setOnTouchListener when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        shouldClick = true
+                        milli = System.currentTimeMillis()
+                        Log.d("home", "millis is initiated $milli")
+                        binding.root.animate().apply {
+                            duration = 100
+                            scaleX(0.7f)
+                            scaleY(0.7f)
+                        }
+                        true
+                    }
+                    MotionEvent.ACTION_CANCEL -> {
+                        shouldClick = false
+                        binding.root.animate().apply {
+                            duration = 100
+                            scaleX(1f)
+                            scaleY(1f)
+                        }
+                        true
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        binding.root.animate().apply {
+                            duration = 200
+                            scaleX(1f)
+                            scaleY(1f)
+                        }
+                        if (shouldClick && System.currentTimeMillis() - milli <= 1000) {
+                            if (differ.currentList.size == viewHolder.bindingAdapterPosition) {
+                                listener.viewMore(code = code)
+                            } else {
+                                listener.onClick(differ.currentList[viewHolder.bindingAdapterPosition])
+                            }
+                        }
+                        true
+                    }
+                    else -> false
+                }
+            }
+/*
             binding.movieImage.setOnClickListener {
                 binding.movieImage.animate().apply {
                     duration = 200
@@ -108,6 +135,8 @@ class HomeViewHolder(private val binding: MovieItemBinding) :
                     listener.onClick(differ.currentList[viewHolder.bindingAdapterPosition])
                 }
             }
+
+ */
             return viewHolder
         }
     }
