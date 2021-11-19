@@ -12,11 +12,7 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_movieDetailsFragment"
-            app:destination="@id/movieDetailsFragment"
-            app:enterAnim="@anim/cool_enter"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@anim/cool_exit" />
+            app:destination="@id/movieDetailsFragment" />
         <action
             android:id="@+id/action_homeFragment_to_searchFragment"
             app:destination="@id/searchFragment"
@@ -43,10 +39,7 @@
         <action
             android:id="@+id/action_movieDetailsFragment_to_searchFragment"
             app:destination="@id/searchFragment"
-            app:enterAnim="@anim/cool_enter"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@anim/cool_exit"/>
+            />
         <action
             android:id="@+id/action_movieDetailsFragment_to_noNetworkFragment"
             app:destination="@id/noNetworkFragment"
@@ -62,11 +55,7 @@
         tools:layout="@layout/fragment_search" >
         <action
             android:id="@+id/action_searchFragment_to_movieDetailsFragment"
-            app:destination="@id/movieDetailsFragment"
-            app:enterAnim="@anim/cool_enter"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@anim/cool_exit"/>
+            app:destination="@id/movieDetailsFragment" />
         <argument
             android:name="code"
             app:argType="string"

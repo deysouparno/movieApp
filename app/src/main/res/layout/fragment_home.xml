@@ -208,4 +208,22 @@
 
     </ScrollView>
 
+    <View
+        android:id="@+id/explode_view"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/explode"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/exploded_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/test1"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

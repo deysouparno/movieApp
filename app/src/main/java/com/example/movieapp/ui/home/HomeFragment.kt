@@ -3,13 +3,19 @@ package com.example.movieapp.ui.home
 import android.net.*
 import android.os.Build
 import android.os.Bundle
+import android.transition.Fade
 import android.util.Log
 import android.view.*
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.example.movieapp.NetworkStatus
 import com.example.movieapp.NetworkStatusHelper
@@ -34,6 +40,7 @@ class HomeFragment : Fragment(), ClickListener {
     private lateinit var popularMovieAdapter: HomeAdapter
     private lateinit var topRatedMovieAdapter: HomeAdapter
     private lateinit var latestMovieAdapter: HomeAdapter
+    private lateinit var explodeAnimation: Animation
 
     private val viewModel: HomeViewModel by viewModels()
 
@@ -48,6 +55,11 @@ class HomeFragment : Fragment(), ClickListener {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.homeToolbar)
         setHasOptionsMenu(true)
         setUpRecyclerViews()
+
+        explodeAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.explode_animation).apply {
+            duration = 500
+            interpolator = AccelerateDecelerateInterpolator()
+        }
 
         NetworkStatusHelper(context = requireContext()).observe(viewLifecycleOwner, {
             Log.d("network", "home observed")
@@ -129,6 +141,11 @@ class HomeFragment : Fragment(), ClickListener {
 
         when (item.itemId) {
             R.id.home_search_menu_item -> {
+//                binding.explodeView.visibility = View.VISIBLE
+//                binding.explodeView.startAnimation(explodeAnimation) {
+//                    binding.explodedView.isVisible = true
+//                    findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSearchFragment())
+//                }
                 findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSearchFragment())
                 return true
             }
@@ -136,10 +153,13 @@ class HomeFragment : Fragment(), ClickListener {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onClick(movie: Movie) {
+    override fun onClick(movie: Movie, movieImg: ImageView) {
         if (viewModel.popularMovies.value == null) return
+        movieImg.transitionName = movie.title
+        val extras = FragmentNavigatorExtras(movieImg to "big_poster")
         findNavController().navigate(
-            HomeFragmentDirections.actionHomeFragmentToMovieDetailsFragment(movie)
+            HomeFragmentDirections.actionHomeFragmentToMovieDetailsFragment(movie),
+            extras
         )
     }
 
@@ -176,4 +196,19 @@ class HomeFragment : Fragment(), ClickListener {
         })
     }
 
+}
+
+fun View.startAnimation(animation: Animation, onEnd: () -> Unit) {
+    animation.setAnimationListener(object : Animation.AnimationListener {
+        override fun onAnimationStart(animation: Animation?) = Unit
+
+        override fun onAnimationEnd(animation: Animation?) {
+            onEnd()
+        }
+
+        override fun onAnimationRepeat(animation: Animation?) = Unit
+
+    })
+
+    this.startAnimation(animation)
 }

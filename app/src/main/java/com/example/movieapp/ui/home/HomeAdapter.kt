@@ -108,7 +108,7 @@ class HomeViewHolder(private val binding: MovieItemBinding) :
                             if (differ.currentList.size == viewHolder.bindingAdapterPosition) {
                                 listener.viewMore(code = code)
                             } else {
-                                listener.onClick(differ.currentList[viewHolder.bindingAdapterPosition])
+                                listener.onClick(differ.currentList[viewHolder.bindingAdapterPosition], binding.movieImage)
                             }
                         }
                         true

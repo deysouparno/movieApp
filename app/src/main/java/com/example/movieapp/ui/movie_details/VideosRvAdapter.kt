@@ -1,6 +1,5 @@
 package com.example.movieapp.ui.movie_details
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -11,7 +10,8 @@ import com.example.movieapp.data.VideoData
 import com.example.movieapp.databinding.VideoItemBinding
 import com.example.movieapp.ui.VideoClickListener
 
-class VideosRvAdapter(private val movieName: String, private val listener: VideoClickListener) : RecyclerView.Adapter<VideoViewHolder>() {
+class VideosRvAdapter(private val movieName: String, private val listener: VideoClickListener) :
+    RecyclerView.Adapter<VideoViewHolder>() {
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
@@ -47,7 +47,11 @@ class VideoViewHolder(private val binding: VideoItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     companion object {
-        fun form(parent: ViewGroup, listener: VideoClickListener, differ: AsyncListDiffer<VideoData>): VideoViewHolder {
+        fun form(
+            parent: ViewGroup,
+            listener: VideoClickListener,
+            differ: AsyncListDiffer<VideoData>
+        ): VideoViewHolder {
             val binding =
                 VideoItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             val viewHolder = VideoViewHolder(binding)

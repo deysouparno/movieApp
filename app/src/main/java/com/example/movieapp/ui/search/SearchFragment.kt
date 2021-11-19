@@ -2,15 +2,18 @@ package com.example.movieapp.ui.search
 
 import android.app.Activity
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
@@ -39,6 +42,12 @@ class SearchFragment : Fragment(), ClickListener {
 
         val args: SearchFragmentArgs by navArgs()
         val code = args.code
+
+        val animation = TransitionInflater.from(requireContext()).inflateTransition(
+            android.R.transition.move
+        )
+        sharedElementEnterTransition = animation
+        sharedElementReturnTransition = animation
 
         val arr = code.split(" ")
 
@@ -176,9 +185,12 @@ class SearchFragment : Fragment(), ClickListener {
         _binding = null
     }
 
-    override fun onClick(movie: Movie) {
+    override fun onClick(movie: Movie, movieImg: ImageView) {
+        movieImg.transitionName = movie.title
+        val extras = FragmentNavigatorExtras(movieImg to "big_poster")
         findNavController().navigate(
-            SearchFragmentDirections.actionSearchFragmentToMovieDetailsFragment(movie = movie)
+            SearchFragmentDirections.actionSearchFragmentToMovieDetailsFragment(movie = movie),
+            extras
         )
     }
 

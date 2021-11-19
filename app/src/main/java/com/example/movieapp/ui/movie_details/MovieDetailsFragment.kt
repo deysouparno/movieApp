@@ -2,6 +2,7 @@ package com.example.movieapp.ui.movie_details
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -35,7 +36,6 @@ class MovieDetailsFragment : Fragment(), VideoClickListener {
 
     private val viewModel: MovieDetailsViewModel by viewModels()
 
-//    private val key = "AIzaSyCxLu-t12qvJR79_r3aLj5nxtVRBG6uSn4"
 
     private var currentVideo = ""
 
@@ -65,6 +65,11 @@ class MovieDetailsFragment : Fragment(), VideoClickListener {
         _binding = FragmentMovieDetailsBinding.inflate(inflater)
         val args: MovieDetailsFragmentArgs by navArgs()
         val movie = args.movie
+        val animation = TransitionInflater.from(requireContext()).inflateTransition(
+            android.R.transition.move
+        )
+        sharedElementEnterTransition = animation
+        sharedElementReturnTransition = animation
 
         NetworkStatusHelper(context = requireContext()).observe(viewLifecycleOwner, {
             when(it){
